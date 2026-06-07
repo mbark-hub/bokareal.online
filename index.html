@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOKA HUB</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Tahoma,sans-serif;
+}
+
+body{
+height:100vh;
+overflow:hidden;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
+}
+
+.bg{
+position:absolute;
+width:100%;
+height:100%;
+background:
+radial-gradient(circle at top,#ff000050,transparent 50%),
+radial-gradient(circle at bottom,#ff000040,transparent 50%),
+linear-gradient(135deg,#000,#120000,#000);
+animation:bgMove 8s infinite alternate;
+}
+
+@keyframes bgMove{
+0%{filter:hue-rotate(0deg);}
+100%{filter:hue-rotate(25deg);}
+}
+
+.card{
+position:relative;
+z-index:5;
+width:420px;
+background:rgba(0,0,0,.85);
+border:2px solid #ff0000;
+border-radius:25px;
+padding:30px;
+backdrop-filter:blur(15px);
+box-shadow:0 0 40px #ff0000;
+}
+
+.logo{
+text-align:center;
+font-size:28px;
+font-weight:bold;
+color:#fff;
+margin-bottom:25px;
+letter-spacing:4px;
+}
+
+.logo i{
+color:#ff0000;
+margin-left:8px;
+}
+
+.input-box{
+margin-bottom:15px;
+}
+
+.input-box label{
+display:block;
+color:#fff;
+margin-bottom:8px;
+}
+
+.input-box input{
+width:100%;
+padding:14px;
+border:none;
+outline:none;
+border-radius:12px;
+background:#111;
+color:white;
+border:1px solid #ff0000;
+}
+
+.btn{
+width:100%;
+padding:14px;
+background:#ff0000;
+color:white;
+border:none;
+border-radius:12px;
+font-size:17px;
+cursor:pointer;
+transition:.3s;
+}
+
+.btn:hover{
+transform:scale(1.03);
+box-shadow:0 0 25px red;
+}
+
+#editor{
+display:none;
+width:95%;
+max-width:1200px;
+height:90vh;
+background:#050505;
+border:2px solid red;
+border-radius:25px;
+padding:20px;
+position:relative;
+z-index:10;
+}
+
+.top-buttons{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.lang{
+flex:1;
+padding:12px;
+background:#111;
+border:1px solid red;
+color:white;
+cursor:pointer;
+border-radius:10px;
+}
+
+textarea{
+width:100%;
+height:65%;
+background:#000;
+border:1px solid red;
+color:white;
+padding:15px;
+resize:none;
+border-radius:15px;
+}
+
+.actions{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.action-btn{
+flex:1;
+padding:14px;
+background:red;
+color:white;
+border:none;
+border-radius:12px;
+cursor:pointer;
+}
+
+.output{
+margin-top:15px;
+background:#111;
+padding:15px;
+border-radius:12px;
+color:#fff;
+word-break:break-all;
+}
+
+.ios{
+position:fixed;
+top:30px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(20,20,20,.95);
+color:white;
+padding:15px 25px;
+border-radius:18px;
+border:1px solid #444;
+display:none;
+z-index:9999;
+box-shadow:0 0 25px #000;
+animation:slide .4s;
+}
+
+@keyframes slide{
+from{
+opacity:0;
+transform:translateX(-50%) translateY(-30px);
+}
+to{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="ios" id="iosAlert"></div>
+
+<div class="card" id="loginBox">
+
+<div class="logo">
+<i class="fas fa-shield-halved"></i>
+B O K A ~ H U B
+</div>
+
+<div class="input-box">
+<label>Username</label>
+<input type="text" id="user">
+</div>
+
+<div class="input-box">
+<label>Password</label>
+<input type="password" id="pass">
+</div>
+
+<button class="btn" onclick="login()">
+<i class="fas fa-right-to-bracket"></i>
+تسجيل الدخول
+</button>
+
+</div>
+
+<div id="editor">
+
+<div class="top-buttons">
+<button class="lang">HTML</button>
+<button class="lang">Lua</button>
+<button class="lang">Luau</button>
+</div>
+
+<textarea id="code" placeholder="ضع الكود هنا"></textarea>
+
+<div class="actions">
+<button class="action-btn" onclick="generateRaw()">
+<i class="fas fa-link"></i>
+Raw
+</button>
+
+<button class="action-btn" onclick="downloadFile()">
+<i class="fas fa-download"></i>
+Download
+</button>
+
+<button class="action-btn" onclick="finishCode()">
+<i class="fas fa-check"></i>
+تم
+</button>
+</div>
+
+<div class="output" id="result">
+جاهز
+</div>
+
+</div>
+
+<script>
+
+function notify(text){
+
+let box=document.getElementById("iosAlert");
+
+box.innerText=text;
+box.style.display="block";
+
+setTimeout(()=>{
+box.style.display="none";
+},3000);
+
+}
+
+function login(){
+
+let u=document.getElementById("user").value;
+let p=document.getElementById("pass").value;
+
+if(
+u==="BOKA/n" &&
+p==="BOKA*()00"
+){
+
+notify("تم تسجيل الدخول");
+
+document.getElementById("loginBox").style.display="none";
+document.getElementById("editor").style.display="block";
+
+}else{
+
+notify("الرمز غير صحيح ❌");
+
+}
+
+}
+
+let currentRaw="";
+
+function finishCode(){
+
+let code=document.getElementById("code").value;
+
+let blob=new Blob(
+[code],
+{type:"text/plain"}
+);
+
+currentRaw=URL.createObjectURL(blob);
+
+document.getElementById("result").innerHTML=
+"تم إنشاء الرابط:<br><br>"+currentRaw;
+
+notify("تم إنشاء السكربت");
+
+}
+
+function generateRaw(){
+
+if(currentRaw===""){
+notify("أنشئ السكربت أولاً");
+return;
+}
+
+navigator.clipboard.writeText(currentRaw);
+
+window.open(currentRaw,"_blank");
+
+notify("تم نسخ رابط RAW");
+
+}
+
+function downloadFile(){
+
+let code=document.getElementById("code").value;
+
+let blob=new Blob(
+[code],
+{type:"text/plain"}
+);
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+a.download="BOKA_SCRIPT.txt";
+
+a.click();
+
+notify("بدأ التحميل");
+
+}
+
+</script>
+
+</body>
+</html>
